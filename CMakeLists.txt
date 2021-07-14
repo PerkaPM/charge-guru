@@ -7,6 +7,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake_modules/)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 
+#find_package(Qt5 COMPONENTS REQUIRED Core)
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Gui REQUIRED)
 find_package(Qt5Widgets REQUIRED)
@@ -26,9 +27,10 @@ qt5_use_modules(ChargeGuru Core Gui Widgets Charts)
 
 find_package(libusb-1.0)
 if (LIBUSB_1_FOUND)
+    message("LIBUSB_1_FOUND")
     include_directories(${LIBUSB_1_INCLUDE_DIRS})
     target_link_libraries(ChargeGuru ${LIBUSB_1_LIBRARIES})
 endif(LIBUSB_1_FOUND)
 
-target_link_libraries(ChargeGuru b6)
+target_link_libraries(ChargeGuru b6 ${LIBUSB_1_LIBRARIES}) 
 

@@ -14,6 +14,14 @@ qt5 qtcharts libusb-1.0 libb6
 
 Grab `libb6` from https://github.com/maciek134/libb6.
 
+in .bashrc add:
+```bash
+export Qt5Core_DIR="/home/wiktor-lyncas/Qt/5.15.2/gcc_64/lib/cmake/Qt5Core/"
+export Qt5Gui_DIR="/home/wiktor-lyncas/Qt/5.15.2/gcc_64/lib/cmake/Qt5Gui/"
+export Qt5Widgets_DIR="/home/wiktor-lyncas/Qt/5.15.2/gcc_64/lib/cmake/Qt5Widgets/"
+export Qt5Charts_DIR="/home/wiktor-lyncas/Qt/5.15.2/gcc_64/lib/cmake/Qt5Charts/"
+```
+
 Run these commands to compile the software:
 ```bash
 $ mkdir build
