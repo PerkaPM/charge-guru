@@ -20,6 +20,8 @@
 #include <QMessageBox>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QtCore/QTime>
+#include <QtCore/QDateTime>
 
 std::vector<std::pair<QString, b6::BATTERY_TYPE>> MainWindow::m_batteryTypes = {
     { "Li-Po", b6::BATTERY_TYPE::LIPO },
@@ -48,6 +50,43 @@ std::vector<std::pair<QString, b6::CHARGING_MODE_PB>> MainWindow::m_chargingMode
     { "Charge", b6::CHARGING_MODE_PB::CHARGE },
     { "Discharge", b6::CHARGING_MODE_PB::DISCHARGE },
 };
+
+void MainWindow::onSaveAppend(QString _fileName, b6::ChargeInfo *info)
+{
+        QFile file(_fileName);
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Append))
+                return;
+
+        QTextStream dataStream(&file);
+
+        dataStream<<info->time<<","<<info->current<<","<<info->voltage<<","<<info->capacity<<","<<info->tempInt<<","<<info->tempExt<<endl;
+
+        file.close();
+}
+void MainWindow::addHeaderToCSV(QString _fileName, b6::ChargeProfile *profile)
+{
+
+    QFile file(_fileName);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Append))
+            return;
+
+    QTextStream dataStream(&file);
+
+    ///cycle number //time //force //delta (flexury)
+    /// time type?
+
+
+//    for(auto data : vDataFrames)
+//    {
+    dataStream<<"Cell Count: "<<","<<"Mode: "<<","<<"Charge Current[mA]"<<","<<"Discharge Current[mA]"<<","<<"End Voltage"<<endl;
+    dataStream<<profile->cellCount<<","<<ui->cbChargingMode->currentText()<<","<<profile->chargeCurrent<<","<<ui->sbDischargeCurrent->value()<<","<<ui->sbEndVoltage->value()<<endl;
+    dataStream<<"Time"<<","<<"Current"<<","<<"Voltage"<<","<<"Capacity"<<","<<"In Temp"<<","<<"Ext Temp"<<endl;
+
+    //    }
+
+    file.close();
+    //add flushing frames from buffer
+}
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
@@ -312,6 +351,8 @@ void MainWindow::m_loadChargeInfo() {
             m_seriesTempExt->append(info.time, info.tempExt);
             m_seriesTempInt->append(info.time, info.tempInt);
 
+            onSaveAppend(file_name, &info);
+
             if (cCurrent < m_minCurrent) m_minCurrent = cCurrent;
             if (cCurrent > m_maxCurrent) m_maxCurrent = cCurrent;
             if (cVoltage < m_minVoltage) m_minVoltage = cVoltage;
@@ -322,6 +363,10 @@ void MainWindow::m_loadChargeInfo() {
             if (info.tempExt > m_maxTempExt) m_maxTempExt = info.tempExt;
             if (info.tempInt < m_minTempInt) m_minTempInt = info.tempInt;
             if (info.tempInt > m_maxTempInt) m_maxTempInt = info.tempInt;
+
+
+
+
 
             m_chartCurrent->axisX()->setRange(0, info.time);
             m_chartCurrent->axisY()->setRange(std::max(0.0, m_minCurrent - 0.5), m_maxCurrent + 0.5);
@@ -456,6 +501,10 @@ void MainWindow::m_startCharging() {
         profile.endVoltage = ui->sbEndVoltage->value();
         profile.rPeakCount = ui->sbRepeakCount->value();
         profile.cycleCount = ui->sbCycleCount->value();
+        file_name = QDateTime::currentDateTime().toString();
+        addHeaderToCSV(file_name, &profile);
+
+
 
         m_seriesCurrent->clear();
         m_seriesVoltage->clear();

@@ -61,6 +61,8 @@ private:
     static std::vector<std::pair<QString, b6::CHARGING_MODE_LI>> m_chargingModesLi;
     static std::vector<std::pair<QString, b6::CHARGING_MODE_NI>> m_chargingModesNi;
     static std::vector<std::pair<QString, b6::CHARGING_MODE_PB>> m_chargingModesPb;
+    void onSaveAppend(QString _fileName, b6::ChargeInfo *info);
+    void addHeaderToCSV(QString _fileName, b6::ChargeProfile *profile);
 
     QTimer *timer;
     Ui::MainWindow *ui;
@@ -79,6 +81,7 @@ private:
 
     b6::Device *m_dev = nullptr;
     bool m_charging = false;
+    QString file_name;
 
     void m_createDevice();
     void m_loadSysInfo();

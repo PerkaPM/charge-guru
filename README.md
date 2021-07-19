@@ -30,6 +30,11 @@ $ cmake .. -DCMAKE_BUILD_TYPE=Release
 $ make
 ```
 
+Probably needed:
+```bash 
+sudo apt-get install --reinstall libxcb-xinerama0
+```
+
 Either run the programs that use it as root (**not recommended**) or create an udev rule similar to this one:
 ```udev
 SUBSYSTEM=="usb", ATTRS{idVendor}=="0000", ATTRS{idProduct}=="0001", MODE:="666", GROUP="plugdev"
