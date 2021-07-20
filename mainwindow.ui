@@ -168,7 +168,7 @@
           <string>mV</string>
          </property>
          <property name="minimum">
-          <number>3000</number>
+          <number>2750</number>
          </property>
          <property name="maximum">
           <number>3300</number>
